@@ -30,16 +30,11 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/apache/opendal-go-services/fs"
 	opendal "github.com/apache/opendal/bindings/go"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
+	"opendal_test/scheme"
 )
-
-// Add more schemes for behavior tests here.
-var schemes = []opendal.Scheme{
-	fs.Scheme,
-}
 
 var op *opendal.Operator
 
@@ -101,8 +96,8 @@ func TestBehavior(t *testing.T) {
 
 func newOperator() (op *opendal.Operator, closeFunc func(), err error) {
 	test := os.Getenv("OPENDAL_TEST")
-	var scheme opendal.Scheme
-	for _, s := range schemes {
+	var sch opendal.Scheme
+	for _, s := range scheme.Table {
 		if s.Name() != test {
 			continue
 		}
@@ -110,15 +105,15 @@ func newOperator() (op *opendal.Operator, closeFunc func(), err error) {
 		if err != nil {
 			return
 		}
-		scheme = s
+		sch = s
 		break
 	}
-	if scheme == nil {
+	if sch == nil {
 		err = fmt.Errorf("unsupported scheme: %s", test)
 		return
 	}
 
-	prefix := fmt.Sprintf("OPENDAL_%s_", strings.ToUpper(scheme.Name()))
+	prefix := fmt.Sprintf("OPENDAL_%s_", strings.ToUpper(sch.Name()))
 
 	opts := opendal.OperatorOptions{}
 	for _, env := range os.Environ() {
@@ -134,7 +129,7 @@ func newOperator() (op *opendal.Operator, closeFunc func(), err error) {
 		opts[strings.ToLower(strings.TrimPrefix(key, prefix))] = value
 	}
 
-	op, err = opendal.NewOperator(scheme, opts)
+	op, err = opendal.NewOperator(sch, opts)
 	if err != nil {
 		err = fmt.Errorf("create operator must succeed: %s", err)
 	}
@@ -142,7 +137,7 @@ func newOperator() (op *opendal.Operator, closeFunc func(), err error) {
 	closeFunc = func() {
 		op.Close()
 
-		os.Remove(scheme.Path())
+		os.Remove(sch.Path())
 	}
 
 	return

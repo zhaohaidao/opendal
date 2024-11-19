@@ -21,6 +21,10 @@ go 1.22.5
 
 require (
 	github.com/apache/opendal-go-services/fs v0.1.3
+	github.com/apache/opendal-go-services/hdfs v0.1.3
+	github.com/apache/opendal-go-services/gcs v0.1.3
+	github.com/apache/opendal-go-services/oss v0.1.3
+	github.com/apache/opendal-go-services/azblob v0.1.3
 	github.com/apache/opendal/bindings/go v0.0.0-20240719044908-d9d4279b3a24
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.9.0

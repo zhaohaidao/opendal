@@ -96,11 +96,11 @@ cd tests/behavior_tests
 # Test a specific backend
 export OPENDAL_TEST=memory
 # Run all tests
-CGO_ENABLE=0 go test -v -run TestBehavior
+CGO_ENABLE=0 go test -v -run TestBehavior -tags "memory"
 # Run specific test
-CGO_ENABLE=0 go test -v -run TestBehavior/Write
+CGO_ENABLE=0 go test -v -run TestBehavior/Write -tags "memory"
 # Run synchronously
-CGO_ENABLE=0 GOMAXPROCS=1 go test -v -run TestBehavior
+CGO_ENABLE=0 GOMAXPROCS=1 go test -v -run TestBehavior -tags "memory"
 ```
 
 ### Benchmark
@@ -110,7 +110,7 @@ cd tests/behavior_tests
 # Benchmark a specific backend
 export OPENDAL_TEST=memory
 
-go test -bench .
+go test -bench -tags "memory" .
 ```
 
 <details>

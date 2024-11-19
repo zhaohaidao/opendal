@@ -28,4 +28,8 @@ build:
     os: "macos-latest"
 service:
   - "fs"
+  - "hdfs"
+  - "gcs"
+  - "oss"
+  - "azblob"
 
