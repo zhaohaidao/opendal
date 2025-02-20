@@ -15,28 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-[package]
-description = "Apache OpenDAL Compat"
-name = "opendal_compat"
+import os
+from uuid import uuid4
 
-authors = ["Apache OpenDAL <dev@opendal.apache.org>"]
-edition = "2021"
-homepage = "https://opendal.apache.org/"
-license = "Apache-2.0"
-repository = "https://github.com/apache/opendal"
-rust-version = "1.75"
-version = "1.0.4"
+import pytest
 
-[package.metadata.docs.rs]
-all-features = true
 
-[features]
-v0_50_to_v0_49 = ["dep:opendal_v0_49", "dep:opendal_v0_50"]
-
-[dependencies]
-async-trait = "0.1"
-opendal_v0_49 = { package = "opendal", version = "0.49", optional = true }
-opendal_v0_50 = { package = "opendal", version = "0.50", optional = true }
-
-[dev-dependencies]
-tokio = { version = "1.41", features = ["full"] }
+@pytest.mark.asyncio
+@pytest.mark.need_capability("read", "write", "delete", "list", "create_dir")
+async def test_async_remove_all(service_name, operator, async_operator):
+    content = os.urandom(1024)
+    target = f"random_{str(uuid4())}"
+    await async_operator.write(target, content)
+    assert await async_operator.exists(target)
+    assert not await async_operator.exists(target + "1")
